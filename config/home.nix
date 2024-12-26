@@ -6,6 +6,7 @@
   home = {
     packages = with pkgs; [
       htop
+      starship
       kubectx
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       sshuttle
@@ -52,7 +53,15 @@
 
     htop = {
       enable = true;
-      show_program_path = true;
+      settings = {
+        show_program_path = true;
+      };
+    };
+
+    starship = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = builtins.fromTOML ( builtins.readFile ./starship.toml );
     };
 
     # zsh = { already done in system configuration
