@@ -12,5 +12,5 @@ An attempt to nixify the configuration of my laptop
 - [x] setup starship
 - [x] improve Zsh config
 - [x] adapt Zsh to former .zshrc
-- [] setup Homebrew
+- [ ] setup Homebrew
 
