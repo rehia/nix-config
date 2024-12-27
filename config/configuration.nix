@@ -1,4 +1,4 @@
-{ pkgs, system, ... }:
+{ pkgs, system, configurationRevision, ... }:
 
 {
   # Necessary for using flakes on this system.
@@ -18,7 +18,6 @@
   };
 
   # Set Git commit hash for darwin-version.
-  # system.configurationRevision = self.rev or self.dirtyRev or null;
 
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
@@ -39,6 +38,8 @@
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
     stateVersion = 5;
+
+    configurationRevision = configurationRevision;
   };
 
   environment = {
@@ -51,8 +52,18 @@
       pkgs.git
       pkgs.fzf
       pkgs.zsh-fast-syntax-highlighting
+      pkgs.iterm2
     ];
   };
+
+  fonts.packages = with pkgs; [
+    material-design-icons
+    font-awesome
+    nerd-fonts.agave
+    nerd-fonts.code-new-roman
+    nerd-fonts.intone-mono
+    nerd-fonts.symbols-only
+  ];
 
   # unlock sudo commands with fingerprint
   security.pam.enableSudoTouchIdAuth = true;

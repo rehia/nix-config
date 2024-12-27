@@ -17,6 +17,7 @@
     username = "jerome";
     system = "aarch64-darwin"; # aarch64-darwin or x86_64-darwin
     hostname = "Jeromes-M1";
+    configurationRevision = self.rev or self.dirtyRev or null;
 
   in
   {
@@ -24,20 +25,24 @@
     # $ darwin-rebuild build --flake .#simple
     darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
       specialArgs = inputs // {
-        inherit username hostname system;
+        inherit username hostname system configurationRevision;
       };
+      system = system;
       modules = [
         ./config/configuration.nix
         ./config/host-user.nix
         home-manager.darwinModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          # Optionally, use home-manager.extraSpecialArgs to pass
-          # arguments to home.nix
-          home-manager.extraSpecialArgs = {
-            inherit username hostname;
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            backupFileExtension = "before-hm";
+            # Optionally, use home-manager.extraSpecialArgs to pass
+            # arguments to home.nix
+            extraSpecialArgs = {
+              inherit username hostname;
+            };
+            users.${username} = import ./config/home.nix;
           };
-          home-manager.users.${username} = import ./config/home.nix;
         }
       ];
     };
