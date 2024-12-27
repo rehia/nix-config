@@ -48,6 +48,7 @@
 
     shellAliases = {
       ll = "ls -lah";
+      update = "darwin-rebuild switch --flake ~/.config/nix";
     };
   };
 
@@ -97,6 +98,9 @@
       };
 
       initExtra = ''
+        bindkey "^[f" forward-word
+        bindkey "^[b" backward-word
+
         [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
