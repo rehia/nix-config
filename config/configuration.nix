@@ -17,7 +17,28 @@
     };
   };
 
-  # Set Git commit hash for darwin-version.
+  homebrew = {
+    enable = true;
+
+    taps = [
+      "confluentinc/confluent-hub-client"
+      "homebrew/bundle"
+    ];
+
+    casks = [
+      "confluent-hub-client"
+      "docker"
+      "miro"
+      "notion"
+    ];
+
+    brews = [
+      "difftastic"
+    ];
+
+    # masApps = {
+    # };
+  };
 
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.

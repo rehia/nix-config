@@ -8,6 +8,7 @@
       htop
       starship
       kubectx
+      kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       sshuttle
       bat
@@ -30,7 +31,8 @@
       gh
       navi
       erlang_27
-      elixir_1_16
+      elixir_1_17
+      mas
     ];
 
     username = username;
@@ -49,6 +51,7 @@
     shellAliases = {
       ll = "ls -lah";
       update = "darwin-rebuild switch --flake ~/.config/nix";
+      sql-alpha = "cloud-sql-proxy sunday-alpha:europe-west1:alpha-eaf1360c7f --private-ip --impersonate-service-account sql-rw@sunday-alpha.iam.gserviceaccount.com --port 5432";
     };
   };
 
@@ -100,6 +103,9 @@
       initExtra = ''
         bindkey "^[f" forward-word
         bindkey "^[b" backward-word
+        # not the same code for left and right arrows in iTerm than in Mac OS terminal
+        bindkey "^[[1;3C" forward-word
+        bindkey "^[[1;3D" backward-word
 
         [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
