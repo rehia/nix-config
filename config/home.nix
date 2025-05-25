@@ -33,6 +33,7 @@
       erlang_27
       elixir_1_17
       mas
+      vscode
     ];
 
     username = username;
@@ -129,6 +130,16 @@
       enableZshIntegration = true;
     };
 
+    vscode = {
+      enable = true;
+      extensions = with pkgs.vscode-extensions; [
+        eamodio.gitlens
+        vscodevim.vim
+        elixir-lsp.vscode-elixir-ls
+        ms-azuretools.vscode-docker
+        ms-vscode-remote.remote-containers
+      ];
+    };
   };
 
   targets.darwin.defaults = {

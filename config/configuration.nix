@@ -1,8 +1,12 @@
-{ pkgs, system, configurationRevision, ... }:
+{ pkgs, system, configurationRevision, lib, ... }:
 
 {
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "vscode"
+    "vscode-extension-ms-vscode-remote-remote-containers"
+  ];
 
   # Enable alternative shell support in nix-darwin.
   # programs.fish.enable = true;
