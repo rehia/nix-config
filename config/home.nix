@@ -34,6 +34,7 @@
       elixir_1_17
       mas
       vscode
+      jp2a
     ];
 
     username = username;
