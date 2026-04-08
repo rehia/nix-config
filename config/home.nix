@@ -12,7 +12,7 @@
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       sshuttle
       bat
-      thefuck
+      # thefuck
       google-cloud-sql-proxy
       csvkit
       redis
@@ -23,7 +23,7 @@
       protobuf
       protoc-gen-grpc-web
       pgcli
-      python310Packages.numpy
+      python313Packages.numpy
       cocogitto
       jq
       yq
@@ -34,7 +34,13 @@
       elixir_1_17
       mas
       vscode
-      jp2a
+      grpcurl
+      libfido2
+      openssh
+      claude-code
+      railway
+      postgresql_18
+      # jp2a
     ];
 
     username = username;
@@ -48,12 +54,25 @@
     # You can update Home Manager without changing this value. See
     # the Home Manager release notes for a list of state version
     # changes in each release.
-    stateVersion = "24.11";
+    stateVersion = "25.11";
 
     shellAliases = {
       ll = "ls -lah";
-      update = "darwin-rebuild switch --flake ~/.config/nix";
-      sql-alpha = "cloud-sql-proxy sunday-alpha:europe-west1:alpha-eaf1360c7f --private-ip --impersonate-service-account sql-rw@sunday-alpha.iam.gserviceaccount.com --port 5432";
+      update = "sudo darwin-rebuild switch --flake ~/.config/nix";
+      pg-prod = "pgcli -h 127.0.0.1 -p 5434 -U sql-ro@sunday-production.iam";
+      pg-rw-prod = "pgcli -h 127.0.0.1 -p 5434 -U sql-rw@sunday-production.iam";
+      pg-alpha = "pgcli -h 127.0.0.1 -p 5434 -U sql-rw@sunday-alpha.iam";
+    };
+
+    activation = {
+      activateUserSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        echo "Activating user settings..."
+        /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      '';
+      linkIterm = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        mkdir -p ~/Applications
+        ln -sf ${pkgs.iterm2}/Applications/iTerm.app ~/Applications/iTerm.app
+      '';
     };
   };
 
@@ -126,14 +145,14 @@
       nix-direnv.enable = true;
     };
 
-    thefuck = {
-      enable = true;
-      enableZshIntegration = true;
-    };
+    # thefuck = {
+    #   enable = true;
+    #  enableZshIntegration = true;
+    # };
 
     vscode = {
       enable = true;
-      extensions = with pkgs.vscode-extensions; [
+      profiles.default.extensions = with pkgs.vscode-extensions; [
         eamodio.gitlens
         vscodevim.vim
         elixir-lsp.vscode-elixir-ls
@@ -144,6 +163,12 @@
   };
 
   targets.darwin.defaults = {
+    NSGlobalDomain = {
+      AppleInterfaceStyleSwitchesAutomatically = true;
+      AppleShowAllExtensions = true;
+      AppleShowAllFiles = true;
+    };
+
     "com.googlecode.iterm2" = {
       AlternateMouseScroll = true;
       CopySelection = true;

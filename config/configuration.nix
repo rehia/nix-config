@@ -1,6 +1,8 @@
-{ pkgs, system, configurationRevision, lib, ... }:
+{ pkgs, username, system, configurationRevision, lib, ... }:
 
 {
+  system.primaryUser = username;
+
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -27,17 +29,20 @@
     taps = [
       "confluentinc/confluent-hub-client"
       "homebrew/bundle"
+      "rtk-ai/tap"
     ];
 
     casks = [
       "confluent-hub-client"
-      "docker"
+      "docker-desktop"
       "miro"
       "notion"
+      "numi"
     ];
 
     brews = [
       "difftastic"
+      "rtk"
     ];
 
     # masApps = {
@@ -46,19 +51,11 @@
 
   system = {
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
-    activationScripts.postUserActivation.text = ''
+    # activationScripts.postActivation.text = ''
       # activateSettings -u will reload the settings from the database and apply them to the current session,
       # so we do not need to logout and login again to make the changes take effect.
-      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-    '';
-
-    defaults = {
-      NSGlobalDomain = {
-        AppleInterfaceStyleSwitchesAutomatically = true;
-        AppleShowAllExtensions = true;
-        AppleShowAllFiles = true;
-      };
-    };
+      #/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+    # '';
 
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
@@ -91,8 +88,11 @@
   ];
 
   # unlock sudo commands with fingerprint
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # The platform the configuration will be used on.
-  nixpkgs.hostPlatform = system;
+  nixpkgs = {
+    hostPlatform = system;
+    config.allowUnfree = true;
+  };
 }
