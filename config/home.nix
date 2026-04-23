@@ -5,14 +5,11 @@
   # paths it should manage.
   home = {
     packages = with pkgs; [
-      htop
-      starship
       kubectx
       kubectl
       (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
       sshuttle
       bat
-      # thefuck
       google-cloud-sql-proxy
       csvkit
       redis
@@ -33,14 +30,12 @@
       erlang_27
       elixir_1_17
       mas
-      vscode
       grpcurl
       libfido2
       openssh
       claude-code
       railway
       postgresql_18
-      # jp2a
     ];
 
     username = username;
@@ -121,7 +116,7 @@
         EDITOR = "vim";
       };
 
-      initExtra = ''
+      initContent = ''
         bindkey "^[f" forward-word
         bindkey "^[b" backward-word
         # not the same code for left and right arrows in iTerm than in Mac OS terminal
@@ -133,9 +128,11 @@
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-        if [ -f '/Users/jerome/sunday/tools/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/jerome/sunday/tools/google-cloud-sdk/completion.zsh.inc'; fi
+        if [ -f "$HOME/sunday/tools/google-cloud-sdk/completion.zsh.inc" ]; then
+          . "$HOME/sunday/tools/google-cloud-sdk/completion.zsh.inc"
+        fi
 
-        source /Users/jerome/.support-tools/install/support-tools-rc.sh ## ADDED BY SUPPORT TOOLS
+        source "$HOME/.support-tools/install/support-tools-rc.sh"
       '';
     };
 

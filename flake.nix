@@ -31,6 +31,7 @@
       modules = [
         ./config/configuration.nix
         ./config/host-user.nix
+        ./config/homebrew.nix
         home-manager.darwinModules.home-manager {
           home-manager = {
             useGlobalPkgs = true;

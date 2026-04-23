@@ -1,80 +1,56 @@
-{ pkgs, username, system, configurationRevision, lib, ... }:
+{ pkgs, username, system, configurationRevision, ... }:
 
 {
   system.primaryUser = username;
 
   # Necessary for using flakes on this system.
   nix.settings.experimental-features = "nix-command flakes";
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "vscode"
-    "vscode-extension-ms-vscode-remote-remote-containers"
-  ];
 
-  # Enable alternative shell support in nix-darwin.
-  # programs.fish.enable = true;
-  programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      # enableFastSyntaxHighlighting = true;
-      enableFzfCompletion = true;
-      enableFzfGit = true;
-      enableFzfHistory = true;
-    };
+  nix.gc = {
+    automatic = true;
+    interval = { Weekday = 0; Hour = 2; Minute = 0; };
+    options = "--delete-older-than 30d";
   };
 
-  homebrew = {
+  nix.optimise.automatic = true;
+
+  # Enable alternative shell support in nix-darwin.
+  programs.zsh = {
     enable = true;
-
-    taps = [
-      "confluentinc/confluent-hub-client"
-      "homebrew/bundle"
-      "rtk-ai/tap"
-    ];
-
-    casks = [
-      "confluent-hub-client"
-      "docker-desktop"
-      "miro"
-      "notion"
-      "numi"
-    ];
-
-    brews = [
-      "difftastic"
-      "rtk"
-    ];
-
-    # masApps = {
-    # };
+    enableCompletion = true;
+    enableFzfCompletion = true;
+    enableFzfGit = true;
+    enableFzfHistory = true;
   };
 
   system = {
-    # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
-    # activationScripts.postActivation.text = ''
-      # activateSettings -u will reload the settings from the database and apply them to the current session,
-      # so we do not need to logout and login again to make the changes take effect.
-      #/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-    # '';
-
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
     stateVersion = 5;
 
     configurationRevision = configurationRevision;
+
+    defaults = {
+      dock = {
+        autohide = true;
+        mru-spaces = false;
+      };
+      NSGlobalDomain = {
+        InitialKeyRepeat = 15;
+        KeyRepeat = 2;
+      };
+    };
   };
 
   environment = {
-    shells = [
-      pkgs.zsh
-    ];
+    shells = [ pkgs.zsh ];
 
-    systemPackages = [
-      pkgs.vim
-      pkgs.git
-      pkgs.fzf
-      pkgs.zsh-fast-syntax-highlighting
-      pkgs.iterm2
+    systemPackages = with pkgs; [
+      vim
+      git
+      fzf
+      zsh-fast-syntax-highlighting
+      iterm2
     ];
   };
 
